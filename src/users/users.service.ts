@@ -5,8 +5,9 @@ export class UsersService {
   findAll(): string {
     return 'Request function is findAll';
   }
-  findOne(id): string {
-    return `response is ${id}`;
+
+  findOne(id, userType): string {
+    return `response is ${id} and ${userType}`;
   }
   create(createUserDto): string {
     return `response is ${JSON.stringify(createUserDto)}`;
