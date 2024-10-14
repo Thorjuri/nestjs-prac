@@ -5,14 +5,14 @@ import { UsersService } from './users.service';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Get()
+  @Get('list')
   findAll() {
     return this.usersService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string, @Query('userType') userType: string) {
-    return this.usersService.findOne(+id, userType);
+  @Get()
+  findOne(@Query('id') id: string) {
+    return this.usersService.findOne(id);
   }
 
   @Post()

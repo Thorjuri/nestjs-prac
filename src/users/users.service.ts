@@ -1,15 +1,18 @@
 import { Injectable } from '@nestjs/common';
+import { DatabaseService} from "../database/database.service";
 
 @Injectable()
 export class UsersService {
+  constructor(private readonly databaseService: DatabaseService) {}
+
   findAll(): string {
     return 'Request function is findAll';
   }
 
-  findOne(id, userType): string {
-    return `response is ${id} and ${userType}`;
+  async findOne(id): Promise<any> {
+    return await this.databaseService.getSingleBySubmissionId(id);
   }
-  create(createUserDto): string {
-    return `response is ${JSON.stringify(createUserDto)}`;
+  create(createUserDto): object {
+    return createUserDto;
   }
 }
