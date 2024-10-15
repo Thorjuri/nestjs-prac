@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { DatabaseService} from "../database/database.service";
+import { DatabaseService } from '../database/database.service';
 
 @Injectable()
 export class UsersService {
@@ -9,9 +9,18 @@ export class UsersService {
     return 'Request function is findAll';
   }
 
-  async findOne(id): Promise<any> {
+  async getOne(id): Promise<object> {
     return await this.databaseService.getSingleBySubmissionId(id);
   }
+
+  async getList(projectId, startDate, endDate): Promise<object> {
+    return await this.databaseService.queryListByProjectId(
+      projectId,
+      startDate,
+      endDate,
+    );
+  }
+
   create(createUserDto): object {
     return createUserDto;
   }

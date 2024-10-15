@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { DynamoDB } from 'aws-sdk';
+import { daxQuery } from '../utils/query';
 const docClient = new DynamoDB.DocumentClient({ region: 'us-east-1' });
 
 @Injectable()
@@ -17,19 +18,22 @@ export class DatabaseService {
     projectId: string,
     startDate: string,
     endDate: string,
-  ): Promise<any> {
+  ): Promise<object> {
     const param = {
       TableName: 'submissions_test',
       IndexName: 'projectId-createTime-index',
-      KeyConditionExpression: 'projectId = :projectId and createTime between :timeA and :timeB',
+      KeyConditionExpression:
+        'projectId = :projectId and createTime between :timeA and :timeB',
       ExpressionAttributeValues: {
         ':timeA': startDate,
         ':timeB': endDate,
         ':projectId': projectId,
       },
-      ScanIndexForward: false
+      ProjectionExpression: 'id, projectId, createTime, kycStatus, fullName',
+      ScanIndexForward: false,
     };
 
-    const result = await docClient.query(param).promise();
+    const result = await daxQuery(param);
+    return result;
   }
 }

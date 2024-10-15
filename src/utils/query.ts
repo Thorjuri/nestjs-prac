@@ -1,22 +1,25 @@
 import { DynamoDB } from 'aws-sdk';
 import { performance } from 'perf_hooks';
 import AmazonDaxClient from 'amazon-dax-client';
+const docClient = new DynamoDB.DocumentClient({ region: 'us-east-1' });
 
 /** DAX 설정 */
-const daxClient = new AmazonDaxClient({
-  endpoints: [
-    'dax://ekyc-cache-dax.tepg4m.dax-clusters.us-east-1.amazonaws.com',
-  ],
-  region: 'us-east-1',
-});
-const dax = new DynamoDB.DocumentClient({
-  region: 'us-east-1',
-  service: daxClient,
-  maxRetries: 3,
-  httpOptions: { timeout: 5000 },
-});
+// const daxClient = new AmazonDaxClient({
+//   endpoints: [
+//     'dax://ekyc-cache-dax.tepg4m.dax-clusters.us-east-1.amazonaws.com',
+//   ],
+//   region: 'us-east-1',
+// });
+// const dax = new DynamoDB.DocumentClient({
+//   region: 'us-east-1',
+//   service: daxClient,
+//   maxRetries: 3,
+//   httpOptions: { timeout: 5000 },
+// });
 
-module.exports = async (params) => {
+export const daxQuery = async (
+  params: DynamoDB.DocumentClient.QueryInput,
+): Promise<DynamoDB.DocumentClient.ItemList> => {
   let items = [];
   let lastEvaluatedKey = null;
   const startTime = performance.now();
@@ -27,7 +30,8 @@ module.exports = async (params) => {
     for (let i = 0; i < maxRetries; i++) {
       try {
         const queryStartTime = performance.now();
-        const result = await dax.query(params).promise();
+        const result = await docClient.query(params).promise();
+        // const result = await dax.query(params).promise();
         const queryEndTime = performance.now();
         totalQueryTime += queryEndTime - queryStartTime;
         queryCount++;
